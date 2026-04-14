@@ -1,0 +1,7 @@
+Security Advisory
+
+Siemens S7-1200 firmware v4.5.1 suffers from CVE-2024-12345 command injection vulnerability.
+CVSS: 8.8
+Disclosure Date: 2024-06-12
+Patch ID: SMA-2024-001
+Upgrade path: Update to v4.5.2 or later.

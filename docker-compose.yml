@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: ics-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ics_vuln_kb
+      TZ: Asia/Shanghai
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  backend:
+    build: ./backend
+    container_name: ics-backend
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      DATABASE_URL: mysql+pymysql://root:root@mysql:3306/ics_vuln_kb?charset=utf8mb4
+      TZ: Asia/Shanghai
+    ports:
+      - '5000:5000'
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build: ./frontend
+    container_name: ics-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_API_BASE_URL: http://localhost:5000
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./frontend:/app
+
+volumes:
+  mysql_data:
